@@ -6,7 +6,6 @@
     <title>Rekap Data - Peningkatan Mutu Pendidikan 2025</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Same styles as index.html */
         :root {
             --primary-color: #1e88e5;
             --primary-dark: #1565c0;
@@ -452,10 +451,7 @@
                         <div class="filter-box">
                             <select class="form-control" id="schoolFilter">
                                 <option value="">Semua Sekolah</option>
-                                <option value="SDN1">SD Negeri 1 Contoh</option>
-                                <option value="SMP2">SMP Negeri 2 Sample</option>
-                                <option value="SMA3">SMA Negeri 3 Test</option>
-                                <option value="SDN4">SD Negeri 4 Demo</option>
+                                <!-- Options will be filled by JavaScript -->
                             </select>
                         </div>
                     </div>
@@ -474,107 +470,8 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>20234567</td>
-                                    <td>SD Negeri 1 Contoh</td>
-                                    <td>Budi Santoso</td>
-                                    <td>198003102005011001</td>
-                                    <td>Guru Kelas</td>
-                                    <td>12/06/2025</td>
-                                    <td class="action-buttons">
-                                        <button class="btn btn-info" onclick="showParticipants('SD Negeri 1 Contoh')">
-                                            <i class="fas fa-eye"></i> Lihat
-                                        </button>
-                                        <button class="btn btn-warning" onclick="editParticipant(1)">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                        <button class="btn btn-danger" onclick="deleteParticipant(1)">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>20234567</td>
-                                    <td>SD Negeri 1 Contoh</td>
-                                    <td>Ani Wijaya</td>
-                                    <td>197805152005012002</td>
-                                    <td>Kepala Sekolah</td>
-                                    <td>12/06/2025</td>
-                                    <td class="action-buttons">
-                                        <button class="btn btn-info" onclick="showParticipants('SD Negeri 1 Contoh')">
-                                            <i class="fas fa-eye"></i> Lihat
-                                        </button>
-                                        <button class="btn btn-warning" onclick="editParticipant(2)">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                        <button class="btn btn-danger" onclick="deleteParticipant(2)">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>20234568</td>
-                                    <td>SMP Negeri 2 Sample</td>
-                                    <td>Cahyo Pratama</td>
-                                    <td>198112032006041003</td>
-                                    <td>Guru Matematika</td>
-                                    <td>12/06/2025</td>
-                                    <td class="action-buttons">
-                                        <button class="btn btn-info" onclick="showParticipants('SMP Negeri 2 Sample')">
-                                            <i class="fas fa-eye"></i> Lihat
-                                        </button>
-                                        <button class="btn btn-warning" onclick="editParticipant(3)">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                        <button class="btn btn-danger" onclick="deleteParticipant(3)">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>20234569</td>
-                                    <td>SMA Negeri 3 Test</td>
-                                    <td>Dewi Lestari</td>
-                                    <td>197911112007012004</td>
-                                    <td>Wakil Kepala Sekolah</td>
-                                    <td>11/06/2025</td>
-                                    <td class="action-buttons">
-                                        <button class="btn btn-info" onclick="showParticipants('SMA Negeri 3 Test')">
-                                            <i class="fas fa-eye"></i> Lihat
-                                        </button>
-                                        <button class="btn btn-warning" onclick="editParticipant(4)">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                        <button class="btn btn-danger" onclick="deleteParticipant(4)">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>20234570</td>
-                                    <td>SD Negeri 4 Demo</td>
-                                    <td>Eko Prasetyo</td>
-                                    <td>198204252008031005</td>
-                                    <td>Guru Olahraga</td>
-                                    <td>11/06/2025</td>
-                                    <td class="action-buttons">
-                                        <button class="btn btn-info" onclick="showParticipants('SD Negeri 4 Demo')">
-                                            <i class="fas fa-eye"></i> Lihat
-                                        </button>
-                                        <button class="btn btn-warning" onclick="editParticipant(5)">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                        <button class="btn btn-danger" onclick="deleteParticipant(5)">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
-                                    </td>
-                                </tr>
+                            <tbody id="participantsTableBody">
+                                <!-- Data will be loaded by JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -595,6 +492,43 @@
                 <ul class="participant-list" id="participantList">
                     <!-- Participants will be listed here -->
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adding New Participant -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tambah Peserta Baru</h2>
+                <span class="close" onclick="closeModal('addModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="addNpsn">NPSN</label>
+                    <input type="text" id="addNpsn" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="addUnitKerja">Unit Kerja</label>
+                    <input type="text" id="addUnitKerja" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="addNama">Nama Lengkap</label>
+                    <input type="text" id="addNama" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="addNip">NIP</label>
+                    <input type="text" id="addNip" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="addJabatan">Jabatan</label>
+                    <input type="text" id="addJabatan" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="addTanggal">Tanggal</label>
+                    <input type="text" id="addTanggal" class="form-control" value="">
+                </div>
+                <button class="btn btn-primary" onclick="addParticipant()">Simpan</button>
             </div>
         </div>
     </div>
@@ -620,6 +554,52 @@
             }
         });
 
+        // Load participants data
+        function loadParticipants() {
+            const pesertaList = JSON.parse(localStorage.getItem('pesertaList')) || [];
+            const tableBody = document.getElementById('participantsTableBody');
+            const schoolFilter = document.getElementById('schoolFilter');
+            
+            // Clear existing rows
+            tableBody.innerHTML = '';
+            
+            // Clear and rebuild school filter options
+            const schools = [...new Set(pesertaList.map(p => p.unitKerja))];
+            schoolFilter.innerHTML = '<option value="">Semua Sekolah</option>';
+            schools.forEach(school => {
+                const option = document.createElement('option');
+                option.value = school;
+                option.textContent = school;
+                schoolFilter.appendChild(option);
+            });
+            
+            // Add participants to table
+            pesertaList.forEach((peserta, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${peserta.npsn || ''}</td>
+                    <td>${peserta.unitKerja || ''}</td>
+                    <td>${peserta.namaLengkap || ''}</td>
+                    <td>${peserta.nip || ''}</td>
+                    <td>${peserta.jabatan || ''}</td>
+                    <td>${peserta.tanggal || ''}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-info" onclick="showParticipants('${peserta.unitKerja}')">
+                            <i class="fas fa-eye"></i> Lihat
+                        </button>
+                        <button class="btn btn-warning" onclick="editParticipant(${index})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteParticipant(${index})">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
         // Search functionality
         document.getElementById('searchInput').addEventListener('keyup', function() {
             const input = this.value.toLowerCase();
@@ -644,9 +624,9 @@
             const rows = document.querySelectorAll('#participantsTable tbody tr');
             
             rows.forEach(row => {
-                const schoolId = row.cells[1].textContent;
+                const schoolName = row.cells[2].textContent;
                 
-                if (filterValue === '' || schoolId.includes(filterValue)) {
+                if (filterValue === '' || schoolName === filterValue) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
@@ -667,19 +647,13 @@
             participantList.innerHTML = '';
             
             // Get all participants from this school
-            const rows = document.querySelectorAll('#participantsTable tbody tr');
-            const participants = [];
-            
-            rows.forEach(row => {
-                if (row.cells[2].textContent === schoolName) {
-                    participants.push(row.cells[3].textContent);
-                }
-            });
+            const pesertaList = JSON.parse(localStorage.getItem('pesertaList')) || [];
+            const participants = pesertaList.filter(peserta => peserta.unitKerja === schoolName);
             
             // Add participants to list
             participants.forEach(participant => {
                 const li = document.createElement('li');
-                li.textContent = participant;
+                li.textContent = `${participant.namaLengkap} (${participant.jabatan})`;
                 participantList.appendChild(li);
             });
             
@@ -688,37 +662,121 @@
         }
 
         // Close modal
-        function closeModal() {
-            document.getElementById('viewModal').style.display = 'none';
+        function closeModal(modalId) {
+            document.getElementById(modalId || 'viewModal').style.display = 'none';
         }
 
         // Close modal when clicking outside
         window.onclick = function(event) {
-            const modal = document.getElementById('viewModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
             }
         }
 
-        // Edit participant (placeholder function)
-        function editParticipant(id) {
-            alert('Edit peserta dengan ID: ' + id);
-            // In a real application, this would open an edit form with the participant's data
+        // Edit participant
+        function editParticipant(index) {
+            const pesertaList = JSON.parse(localStorage.getItem('pesertaList')) || [];
+            const peserta = pesertaList[index];
+            
+            if (!peserta) return;
+            
+            // In a real application, you would show an edit form
+            // For simplicity, we'll just use prompts
+            const newNama = prompt('Edit Nama:', peserta.namaLengkap);
+            if (newNama === null) return;
+            
+            const newNip = prompt('Edit NIP:', peserta.nip);
+            if (newNip === null) return;
+            
+            const newJabatan = prompt('Edit Jabatan:', peserta.jabatan);
+            if (newJabatan === null) return;
+            
+            // Update data
+            peserta.namaLengkap = newNama;
+            peserta.nip = newNip;
+            peserta.jabatan = newJabatan;
+            
+            // Save back to localStorage
+            localStorage.setItem('pesertaList', JSON.stringify(pesertaList));
+            
+            // Reload table
+            loadParticipants();
+            
+            alert('Data peserta berhasil diperbarui!');
         }
 
-        // Delete participant (placeholder function)
-        function deleteParticipant(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus peserta ini?')) {
-                alert('Peserta dengan ID: ' + id + ' telah dihapus');
-                // In a real application, this would remove the participant from the database
-            }
+        // Delete participant
+        function deleteParticipant(index) {
+            if (!confirm('Apakah Anda yakin ingin menghapus peserta ini?')) return;
+            
+            const pesertaList = JSON.parse(localStorage.getItem('pesertaList')) || [];
+            pesertaList.splice(index, 1);
+            
+            // Re-number the participants
+            pesertaList.forEach((peserta, idx) => {
+                peserta.no = idx + 1;
+            });
+            
+            // Save back to localStorage
+            localStorage.setItem('pesertaList', JSON.stringify(pesertaList));
+            
+            // Reload table
+            loadParticipants();
+            
+            alert('Peserta berhasil dihapus!');
         }
 
-        // Show add modal (placeholder function)
+        // Show add modal
         function showAddModal() {
-            alert('Tampilkan form tambah peserta baru');
-            // In a real application, this would open a form to add a new participant
+            // Set today's date as default
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }).replace(/\//g, '/');
+            
+            document.getElementById('addTanggal').value = formattedDate;
+            document.getElementById('addModal').style.display = 'block';
         }
+
+        // Add new participant
+        function addParticipant() {
+            const pesertaList = JSON.parse(localStorage.getItem('pesertaList')) || [];
+            
+            const newPeserta = {
+                no: pesertaList.length + 1,
+                npsn: document.getElementById('addNpsn').value,
+                unitKerja: document.getElementById('addUnitKerja').value,
+                namaLengkap: document.getElementById('addNama').value,
+                nip: document.getElementById('addNip').value,
+                jabatan: document.getElementById('addJabatan').value,
+                tanggal: document.getElementById('addTanggal').value
+            };
+            
+            // Validate required fields
+            if (!newPeserta.unitKerja || !newPeserta.namaLengkap || !newPeserta.jabatan) {
+                alert('Harap isi Unit Kerja, Nama Lengkap, dan Jabatan!');
+                return;
+            }
+            
+            // Add to list
+            pesertaList.push(newPeserta);
+            
+            // Save to localStorage
+            localStorage.setItem('pesertaList', JSON.stringify(pesertaList));
+            
+            // Close modal
+            closeModal('addModal');
+            
+            // Reload table
+            loadParticipants();
+            
+            alert('Peserta baru berhasil ditambahkan!');
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadParticipants);
     </script>
 </body>
 </html>
