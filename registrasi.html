@@ -40,7 +40,6 @@
             padding: 20px;
         }
 
-        /* Card Styles */
         .card {
             background-color: var(--light-color);
             border-radius: 10px;
@@ -67,7 +66,6 @@
             opacity: 0.8;
         }
 
-        /* Form Styles */
         .form-group {
             margin-bottom: 20px;
         }
@@ -108,7 +106,6 @@
             background-size: 1em;
         }
 
-        /* Button Styles */
         .btn {
             padding: 12px 25px;
             border: none;
@@ -142,7 +139,6 @@
             width: 100%;
         }
 
-        /* Notification Styles */
         .notification-overlay {
             position: fixed;
             top: 0;
@@ -233,7 +229,6 @@
             color: white;
         }
 
-        /* Form Steps */
         .form-step {
             display: none;
         }
@@ -291,7 +286,6 @@
             display: none;
         }
 
-        /* Responsive Styles */
         @media (max-width: 576px) {
             .card {
                 padding: 20px;
@@ -305,6 +299,22 @@
                 width: 100%;
             }
         }
+
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -315,7 +325,6 @@
                 <p>Kegiatan Peningkatan Mutu Pendidikan dan Tenaga Kependidikan Tahun 2025</p>
             </div>
 
-            <!-- Step Indicator -->
             <div class="step-indicator">
                 <div class="step active" id="step1">1</div>
                 <div class="step" id="step2">2</div>
@@ -323,7 +332,6 @@
                 <div class="step" id="step4">4</div>
             </div>
 
-            <!-- Step 1: Initial Notification -->
             <div class="form-step active" id="step1-form">
                 <div style="text-align: center; margin-bottom: 30px;">
                     <i class="fas fa-info-circle notification-icon info"></i>
@@ -341,7 +349,6 @@
                 </button>
             </div>
 
-            <!-- Step 2: Kepala Sekolah -->
             <div class="form-step" id="step2-form">
                 <h3 style="margin-bottom: 20px; color: var(--primary-color); text-align: center;">
                     <i class="fas fa-user-tie"></i> Data Kepala Sekolah
@@ -350,17 +357,15 @@
                 <div class="form-group">
                     <label for="kecamatan">Kecamatan</label>
                     <select id="kecamatan" class="form-select" required>
-                        <option value="">Pilih Kecamatan</option>
-                        <option value="Kecamatan A">Kecamatan A</option>
-                        <option value="Kecamatan B">Kecamatan B</option>
-                        <option value="Kecamatan C">Kecamatan C</option>
-                        <option value="Kecamatan D">Kecamatan D</option>
+                        <option value="">Memuat data kecamatan...</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="nama-sekolah">Nama Sekolah</label>
-                    <input type="text" id="nama-sekolah" class="form-control" required>
+                    <select id="nama-sekolah" class="form-select" required>
+                        <option value="">Pilih Sekolah</option>
+                    </select>
                 </div>
                 
                 <div class="form-group">
@@ -390,7 +395,6 @@
                 </button>
             </div>
 
-            <!-- Step 3: Guru IT -->
             <div class="form-step" id="step3-form">
                 <h3 style="margin-bottom: 20px; color: var(--primary-color); text-align: center;">
                     <i class="fas fa-laptop-code"></i> Data Guru IT
@@ -428,7 +432,6 @@
                 </button>
             </div>
 
-            <!-- Step 4: Karus Kurikulum -->
             <div class="form-step" id="step4-form">
                 <h3 style="margin-bottom: 20px; color: var(--primary-color); text-align: center;">
                     <i class="fas fa-book-open"></i> Data Kepala Urusan Kurikulum
@@ -463,7 +466,6 @@
         </div>
     </div>
 
-    <!-- Confirmation Notification -->
     <div class="notification-overlay" id="confirmationModal">
         <div class="notification-box">
             <i class="fas fa-question-circle notification-icon warning"></i>
@@ -480,7 +482,6 @@
         </div>
     </div>
 
-    <!-- Success Notification -->
     <div class="notification-overlay" id="successModal">
         <div class="notification-box animate__animated animate__bounceIn">
             <i class="fas fa-check-circle notification-icon success"></i>
@@ -493,9 +494,127 @@
     </div>
 
     <script>
-        // Current step
+        // Data sekolah dari Google Sheets
+        let sekolahData = [];
         let currentStep = 1;
+        let formData = {
+            kepalaSekolah: {},
+            guruIT: {},
+            karusKurikulum: {}
+        };
+
+        // Fungsi untuk memuat data sekolah dari Google Sheets
+        async function loadSekolahData() {
+            try {
+                const kecamatanSelect = document.getElementById('kecamatan');
+                kecamatanSelect.innerHTML = '<option value="">Memuat data kecamatan...</option>';
+                
+                // Menampilkan loading spinner
+                kecamatanSelect.disabled = true;
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'spinner';
+                kecamatanSelect.parentNode.insertBefore(loadingDiv, kecamatanSelect.nextSibling);
+                
+                // Mengambil data dari Google Sheets
+                const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vR0x4Btne1zAgitW5Uwko-Ue2YAu8C-Oi4qU1e4NmTYtHonNoXCQbgttwakLhonZXGFTnzsh9GEMlF7/pub?gid=0&single=true&output=csv');
+                
+                if (!response.ok) {
+                    throw new Error('Gagal memuat data: ' + response.status);
+                }
+                
+                const csvData = await response.text();
+                
+                // Parse CSV data dengan penanganan yang lebih baik
+                const rows = csvData.split('\n').filter(row => row.trim() !== '');
+                const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
+                
+                const idxKecamatan = headers.indexOf('kecamatan');
+                const idxSekolah = headers.indexOf('satuan pendidikan') !== -1 ? 
+                    headers.indexOf('satuan pendidikan') : 
+                    headers.indexOf('nama sekolah');
+                
+                if (idxKecamatan === -1 || idxSekolah === -1) {
+                    throw new Error('Format data tidak sesuai - kolom tidak ditemukan');
+                }
+                
+                sekolahData = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    // Handle quoted values that may contain commas
+                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    
+                    const kecamatan = cols[idxKecamatan]?.trim().replace(/"/g, '') || '';
+                    const sekolah = cols[idxSekolah]?.trim().replace(/"/g, '') || '';
+                    
+                    if (kecamatan && sekolah) {
+                        sekolahData.push({
+                            kecamatan: kecamatan,
+                            namaSekolah: sekolah,
+                            npsn: cols[headers.indexOf('npsn')]?.trim().replace(/"/g, '') || ''
+                        });
+                    }
+                }
+                
+                // Hapus duplikat dan urutkan
+                sekolahData = sekolahData.filter((v, i, a) => 
+                    a.findIndex(t => (t.kecamatan === v.kecamatan && t.namaSekolah === v.namaSekolah)) === i
+                ).sort((a, b) => {
+                    if (a.kecamatan === b.kecamatan) {
+                        return a.namaSekolah.localeCompare(b.namaSekolah);
+                    }
+                    return a.kecamatan.localeCompare(b.kecamatan);
+                });
+                
+                // Isi dropdown kecamatan dengan data unik
+                const kecamatanList = [...new Set(sekolahData.map(item => item.kecamatan))];
+                kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+                
+                kecamatanList.forEach(kecamatan => {
+                    const option = document.createElement('option');
+                    option.value = kecamatan;
+                    option.textContent = kecamatan;
+                    kecamatanSelect.appendChild(option);
+                });
+                
+                // Hapus loading spinner dan aktifkan select
+                kecamatanSelect.parentNode.removeChild(loadingDiv);
+                kecamatanSelect.disabled = false;
+                
+            } catch (error) {
+                console.error('Error loading sekolah data:', error);
+                const kecamatanSelect = document.getElementById('kecamatan');
+                kecamatanSelect.innerHTML = '<option value="">Gagal memuat data. Silakan refresh halaman.</option>';
+                
+                // Hapus loading spinner jika ada
+                const spinner = document.querySelector('.spinner');
+                if (spinner) {
+                    spinner.parentNode.removeChild(spinner);
+                }
+            }
+        }
         
+        // Fungsi untuk memfilter sekolah berdasarkan kecamatan
+        function filterSekolahByKecamatan(kecamatan) {
+            const namaSekolahSelect = document.getElementById('nama-sekolah');
+            namaSekolahSelect.innerHTML = '<option value="">Pilih Sekolah</option>';
+            
+            if (!kecamatan) return;
+            
+            // Filter sekolah berdasarkan kecamatan
+            const sekolahDiKecamatan = sekolahData
+                .filter(sekolah => sekolah.kecamatan === kecamatan)
+                .sort((a, b) => a.namaSekolah.localeCompare(b.namaSekolah));
+            
+            // Isi dropdown sekolah
+            sekolahDiKecamatan.forEach(sekolah => {
+                const option = document.createElement('option');
+                option.value = sekolah.namaSekolah;
+                option.textContent = sekolah.namaSekolah;
+                option.dataset.npsn = sekolah.npsn;
+                namaSekolahSelect.appendChild(option);
+            });
+        }
+
         // Function to move to next step
         function nextStep(step) {
             // Validate current step before proceeding
@@ -504,9 +623,11 @@
             } 
             else if (step === 2) {
                 if (!validateStep2()) return;
+                saveStepData(2);
             } 
             else if (step === 3) {
                 if (!validateStep3()) return;
+                saveStepData(3);
             }
             
             // Hide current step
@@ -521,6 +642,11 @@
             document.getElementById(`step${currentStep}`).classList.add('active');
             
             // Update step indicators
+            updateStepIndicators();
+        }
+        
+        // Update step indicators
+        function updateStepIndicators() {
             for (let i = 1; i <= 4; i++) {
                 const stepEl = document.getElementById(`step${i}`);
                 if (i < currentStep) {
@@ -532,6 +658,27 @@
                 } else {
                     stepEl.classList.remove('active', 'completed');
                 }
+            }
+        }
+        
+        // Save data from current step
+        function saveStepData(step) {
+            if (step === 2) {
+                formData.kepalaSekolah = {
+                    kecamatan: document.getElementById('kecamatan').value,
+                    sekolah: document.getElementById('nama-sekolah').value,
+                    npsn: document.getElementById('nama-sekolah').selectedOptions[0]?.dataset.npsn || '',
+                    nama: document.getElementById('nama-kepsek').value,
+                    nip: document.getElementById('nip-kepsek').value,
+                    jabatan: document.getElementById('jabatan-kepsek').value
+                };
+            } else if (step === 3) {
+                formData.guruIT = {
+                    nama: document.getElementById('nama-guru').value,
+                    nip: document.getElementById('nip-guru').value,
+                    jabatan: document.getElementById('jabatan-guru').value,
+                    pengalamanIT: document.getElementById('pengalaman-it').value
+                };
             }
         }
         
@@ -581,7 +728,36 @@
         // Show confirmation modal
         function showConfirmation() {
             if (!validateStep4()) return;
-            document.getElementById('confirmationModal').classList.add('active');
+            saveStepData(4); // Save data from step 4
+            
+            // Tampilkan ringkasan data sebelum dikirim
+            const confirmationModal = document.getElementById('confirmationModal');
+            const confirmationContent = `
+                <h3>Konfirmasi Data</h3>
+                <div style="text-align: left; margin: 20px 0;">
+                    <h4>Kepala Sekolah</h4>
+                    <p>Kecamatan: ${formData.kepalaSekolah.kecamatan}</p>
+                    <p>Sekolah: ${formData.kepalaSekolah.sekolah}</p>
+                    <p>Nama: ${formData.kepalaSekolah.nama}</p>
+                    <p>NIP: ${formData.kepalaSekolah.nip}</p>
+                    
+                    <h4 style="margin-top: 15px;">Guru IT</h4>
+                    <p>Nama: ${formData.guruIT.nama}</p>
+                    <p>NIP: ${formData.guruIT.nip}</p>
+                    <p>Pengalaman IT: ${formData.guruIT.pengalamanIT} tahun</p>
+                    
+                    <h4 style="margin-top: 15px;">Kepala Urusan Kurikulum</h4>
+                    <p>Nama: ${formData.karusKurikulum.nama}</p>
+                    <p>NIP: ${formData.karusKurikulum.nip}</p>
+                </div>
+            `;
+            
+            confirmationModal.querySelector('.notification-box').insertBefore(
+                document.createElement('div'), 
+                confirmationModal.querySelector('.notification-buttons')
+            ).innerHTML = confirmationContent;
+            
+            confirmationModal.classList.add('active');
         }
         
         // Validate Step 4 (Karus Kurikulum)
@@ -600,6 +776,13 @@
                 alert('NIP harus 18 digit angka!');
                 return false;
             }
+            
+            // Save data from step 4
+            formData.karusKurikulum = {
+                nama: namaKarus,
+                nip: nip,
+                jabatan: jabatan
+            };
             
             return true;
         }
@@ -634,7 +817,7 @@
             
             // Reset all form fields
             document.getElementById('kecamatan').value = '';
-            document.getElementById('nama-sekolah').value = '';
+            document.getElementById('nama-sekolah').innerHTML = '<option value="">Pilih Sekolah</option>';
             document.getElementById('nama-kepsek').value = '';
             document.getElementById('nip-kepsek').value = '';
             document.getElementById('jabatan-kepsek').value = '';
@@ -646,6 +829,13 @@
             document.getElementById('nip-karus').value = '';
             document.getElementById('jabatan-karus').value = '';
             
+            // Reset form data
+            formData = {
+                kepalaSekolah: {},
+                guruIT: {},
+                karusKurikulum: {}
+            };
+            
             // Reset to first step
             document.getElementById(`step${currentStep}-form`).classList.remove('active');
             document.getElementById(`step${currentStep}`).classList.remove('active');
@@ -654,15 +844,18 @@
             document.getElementById(`step${currentStep}`).classList.add('active');
             
             // Reset step indicators
-            for (let i = 1; i <= 4; i++) {
-                const stepEl = document.getElementById(`step${i}`);
-                if (i === 1) {
-                    stepEl.classList.add('active');
-                } else {
-                    stepEl.classList.remove('active', 'completed');
-                }
-            }
+            updateStepIndicators();
         }
+
+        // Panggil fungsi load data ketika halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSekolahData();
+            
+            // Event listener untuk perubahan kecamatan
+            document.getElementById('kecamatan').addEventListener('change', function() {
+                filterSekolahByKecamatan(this.value);
+            });
+        });
     </script>
 </body>
 </html>
