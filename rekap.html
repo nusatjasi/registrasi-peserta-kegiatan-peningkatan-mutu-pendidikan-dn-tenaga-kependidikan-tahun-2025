@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rekap Data - Peningkatan Mutu Pendidikan 2025</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary-color: #1e88e5;
@@ -16,6 +17,7 @@
             --danger-color: #e53935;
             --warning-color: #ffb300;
             --success-color: #43a047;
+            --excel-color: #217346;
         }
 
         * {
@@ -219,6 +221,16 @@
 
         .btn-print:hover {
             background-color: #388e3c;
+        }
+
+        .btn-excel {
+            background-color: var(--excel-color);
+            color: var(--light-color);
+            margin-left: 10px;
+        }
+
+        .btn-excel:hover {
+            background-color: #1a5c36;
         }
 
         .btn-danger {
@@ -437,6 +449,9 @@
                     <div>
                         <button class="btn btn-primary" onclick="showAddModal()">
                             <i class="fas fa-plus"></i> Tambah Data
+                        </button>
+                        <button class="btn btn-excel" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> Download Excel
                         </button>
                         <button class="btn btn-print" onclick="window.print()">
                             <i class="fas fa-print"></i> Cetak Laporan
@@ -773,6 +788,41 @@
             loadParticipants();
             
             alert('Peserta baru berhasil ditambahkan!');
+        }
+
+        // Export to Excel function
+        function exportToExcel() {
+            const pesertaList = JSON.parse(localStorage.getItem('pesertaList')) || [];
+            
+            if (pesertaList.length === 0) {
+                alert('Tidak ada data peserta untuk diexport!');
+                return;
+            }
+            
+            // Prepare worksheet
+            const wsData = [
+                ["No", "NPSN", "Unit Kerja", "Nama Lengkap", "NIP", "Jabatan", "Tanggal"],
+                ...pesertaList.map(peserta => [
+                    peserta.no,
+                    peserta.npsn || '',
+                    peserta.unitKerja || '',
+                    peserta.namaLengkap || '',
+                    peserta.nip || '',
+                    peserta.jabatan || '',
+                    peserta.tanggal || ''
+                ])
+            ];
+            
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Data Peserta");
+            
+            // Generate file and download
+            const date = new Date();
+            const dateStr = date.toISOString().split('T')[0];
+            XLSX.writeFile(wb, `Rekap_Peserta_${dateStr}.xlsx`);
         }
 
         // Load data when page loads
