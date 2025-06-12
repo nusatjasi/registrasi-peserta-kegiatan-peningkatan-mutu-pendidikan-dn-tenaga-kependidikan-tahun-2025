@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekap Data - Peningkatan Mutu Pendidikan 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Same styles as index.html */
+        :root {
+            --primary-color: #1e88e5;
+            --primary-dark: #1565c0;
+            --light-color: #ffffff;
+            --background-color: #f5f5f5;
+            --text-color: #333333;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --danger-color: #e53935;
+            --warning-color: #ffb300;
+            --success-color: #43a047;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--light-color);
+            box-shadow: var(--shadow);
+            position: fixed;
+            height: 100vh;
+            transition: all 0.3s;
+            z-index: 1000;
+            transform: translateX(-250px);
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            text-align: center;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            list-style: none;
+            padding: 10px 20px;
+            border-bottom: 1px solid #eee;
+            transition: all 0.2s;
+        }
+
+        .sidebar-menu li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .sidebar-menu li.active {
+            background-color: #e3f2fd;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .sidebar-menu li a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-menu li a i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            margin-left: 0;
+            transition: all 0.3s;
+        }
+
+        .main-content.active {
+            margin-left: 250px;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .navbar-brand {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--light-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+        }
+
+        .table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            margin: 2px;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-print {
+            background-color: var(--success-color);
+            color: var(--light-color);
+            margin-left: 10px;
+        }
+
+        .btn-print:hover {
+            background-color: #388e3c;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: var(--light-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c62828;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--light-color);
+        }
+
+        .btn-warning:hover {
+            background-color: #ff8f00;
+        }
+
+        .btn-info {
+            background-color: #00acc1;
+            color: var(--light-color);
+        }
+
+        .btn-info:hover {
+            background-color: #00838f;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            margin-right: 10px;
+        }
+
+        .filter-box {
+            min-width: 200px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            width: 80%;
+            max-width: 700px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .school-participants {
+            margin-top: 20px;
+        }
+
+        .school-participants h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .participant-list {
+            list-style-type: none;
+        }
+
+        .participant-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Responsive Styles */
+        @media (min-width: 768px) {
+            .sidebar {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 250px;
+            }
+            
+            .menu-btn {
+                display: none;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .sidebar {
+                transform: translateX(-250px);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content.active {
+                margin-left: 250px;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .search-box, .filter-box {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                margin: 2px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>Daftar Hadir</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="index.html">
+                        <i class="fas fa-home"></i> Beranda
+                    </a>
+                </li>
+                <li>
+                    <a href="registrasi.html">
+                        <i class="fas fa-user-plus"></i> Registrasi Peserta
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="rekap.html">
+                        <i class="fas fa-clipboard-list"></i> Rekap Data Peserta
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <!-- Navbar -->
+            <nav class="navbar">
+                <button class="menu-btn" id="menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="navbar-brand">Rekap Data Peserta</div>
+                <div></div>
+            </nav>
+
+            <!-- Rekap Section -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>Data Peserta Kegiatan</h2>
+                    <div>
+                        <button class="btn btn-primary" onclick="showAddModal()">
+                            <i class="fas fa-plus"></i> Tambah Data
+                        </button>
+                        <button class="btn btn-print" onclick="window.print()">
+                            <i class="fas fa-print"></i> Cetak Laporan
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="search-filter">
+                        <div class="search-box">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Cari peserta...">
+                        </div>
+                        <div class="filter-box">
+                            <select class="form-control" id="schoolFilter">
+                                <option value="">Semua Sekolah</option>
+                                <option value="SDN1">SD Negeri 1 Contoh</option>
+                                <option value="SMP2">SMP Negeri 2 Sample</option>
+                                <option value="SMA3">SMA Negeri 3 Test</option>
+                                <option value="SDN4">SD Negeri 4 Demo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table" id="participantsTable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>NPSN</th>
+                                    <th>Unit Kerja</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>NIP</th>
+                                    <th>Jabatan</th>
+                                    <th>Tanggal</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>20234567</td>
+                                    <td>SD Negeri 1 Contoh</td>
+                                    <td>Budi Santoso</td>
+                                    <td>198003102005011001</td>
+                                    <td>Guru Kelas</td>
+                                    <td>12/06/2025</td>
+                                    <td class="action-buttons">
+                                        <button class="btn btn-info" onclick="showParticipants('SD Negeri 1 Contoh')">
+                                            <i class="fas fa-eye"></i> Lihat
+                                        </button>
+                                        <button class="btn btn-warning" onclick="editParticipant(1)">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-danger" onclick="deleteParticipant(1)">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>20234567</td>
+                                    <td>SD Negeri 1 Contoh</td>
+                                    <td>Ani Wijaya</td>
+                                    <td>197805152005012002</td>
+                                    <td>Kepala Sekolah</td>
+                                    <td>12/06/2025</td>
+                                    <td class="action-buttons">
+                                        <button class="btn btn-info" onclick="showParticipants('SD Negeri 1 Contoh')">
+                                            <i class="fas fa-eye"></i> Lihat
+                                        </button>
+                                        <button class="btn btn-warning" onclick="editParticipant(2)">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-danger" onclick="deleteParticipant(2)">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>20234568</td>
+                                    <td>SMP Negeri 2 Sample</td>
+                                    <td>Cahyo Pratama</td>
+                                    <td>198112032006041003</td>
+                                    <td>Guru Matematika</td>
+                                    <td>12/06/2025</td>
+                                    <td class="action-buttons">
+                                        <button class="btn btn-info" onclick="showParticipants('SMP Negeri 2 Sample')">
+                                            <i class="fas fa-eye"></i> Lihat
+                                        </button>
+                                        <button class="btn btn-warning" onclick="editParticipant(3)">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-danger" onclick="deleteParticipant(3)">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>20234569</td>
+                                    <td>SMA Negeri 3 Test</td>
+                                    <td>Dewi Lestari</td>
+                                    <td>197911112007012004</td>
+                                    <td>Wakil Kepala Sekolah</td>
+                                    <td>11/06/2025</td>
+                                    <td class="action-buttons">
+                                        <button class="btn btn-info" onclick="showParticipants('SMA Negeri 3 Test')">
+                                            <i class="fas fa-eye"></i> Lihat
+                                        </button>
+                                        <button class="btn btn-warning" onclick="editParticipant(4)">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-danger" onclick="deleteParticipant(4)">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>20234570</td>
+                                    <td>SD Negeri 4 Demo</td>
+                                    <td>Eko Prasetyo</td>
+                                    <td>198204252008031005</td>
+                                    <td>Guru Olahraga</td>
+                                    <td>11/06/2025</td>
+                                    <td class="action-buttons">
+                                        <button class="btn btn-info" onclick="showParticipants('SD Negeri 4 Demo')">
+                                            <i class="fas fa-eye"></i> Lihat
+                                        </button>
+                                        <button class="btn btn-warning" onclick="editParticipant(5)">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-danger" onclick="deleteParticipant(5)">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal for Viewing School Participants -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Daftar Peserta</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="school-participants">
+                <h3 id="schoolName"></h3>
+                <ul class="participant-list" id="participantList">
+                    <!-- Participants will be listed here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Sidebar
+        document.getElementById('menu-btn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('main-content').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.getElementById('menu-btn');
+            
+            if (window.innerWidth < 768 && 
+                !sidebar.contains(event.target) && 
+                !menuBtn.contains(event.target) && 
+                sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                document.getElementById('main-content').classList.remove('active');
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const input = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#participantsTable tbody tr');
+            
+            rows.forEach(row => {
+                const name = row.cells[3].textContent.toLowerCase();
+                const school = row.cells[2].textContent.toLowerCase();
+                const nip = row.cells[4].textContent.toLowerCase();
+                
+                if (name.includes(input) || school.includes(input) || nip.includes(input)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter by school
+        document.getElementById('schoolFilter').addEventListener('change', function() {
+            const filterValue = this.value;
+            const rows = document.querySelectorAll('#participantsTable tbody tr');
+            
+            rows.forEach(row => {
+                const schoolId = row.cells[1].textContent;
+                
+                if (filterValue === '' || schoolId.includes(filterValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Show participants modal
+        function showParticipants(schoolName) {
+            const modal = document.getElementById('viewModal');
+            const schoolNameElement = document.getElementById('schoolName');
+            const participantList = document.getElementById('participantList');
+            
+            // Set school name
+            schoolNameElement.textContent = schoolName;
+            
+            // Clear previous list
+            participantList.innerHTML = '';
+            
+            // Get all participants from this school
+            const rows = document.querySelectorAll('#participantsTable tbody tr');
+            const participants = [];
+            
+            rows.forEach(row => {
+                if (row.cells[2].textContent === schoolName) {
+                    participants.push(row.cells[3].textContent);
+                }
+            });
+            
+            // Add participants to list
+            participants.forEach(participant => {
+                const li = document.createElement('li');
+                li.textContent = participant;
+                participantList.appendChild(li);
+            });
+            
+            // Show modal
+            modal.style.display = 'block';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('viewModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('viewModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Edit participant (placeholder function)
+        function editParticipant(id) {
+            alert('Edit peserta dengan ID: ' + id);
+            // In a real application, this would open an edit form with the participant's data
+        }
+
+        // Delete participant (placeholder function)
+        function deleteParticipant(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus peserta ini?')) {
+                alert('Peserta dengan ID: ' + id + ' telah dihapus');
+                // In a real application, this would remove the participant from the database
+            }
+        }
+
+        // Show add modal (placeholder function)
+        function showAddModal() {
+            alert('Tampilkan form tambah peserta baru');
+            // In a real application, this would open a form to add a new participant
+        }
+    </script>
+</body>
+</html>
