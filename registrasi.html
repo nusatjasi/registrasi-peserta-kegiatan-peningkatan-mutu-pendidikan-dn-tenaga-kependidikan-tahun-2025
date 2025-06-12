@@ -385,13 +385,13 @@
                     <select id="jabatan-kepsek" class="form-select" required>
                         <option value="">Pilih Jabatan</option>
                         <option value="Kepala Sekolah">Kepala Sekolah</option>
-                        <option value="Guru IT" disabled>Guru </option>
+                        <option value="Guru" disabled>Guru</option>
                         <option value="Kepala Urusan Kurikulum" disabled>Kepala Urusan Kurikulum</option>
                     </select>
                 </div>
                 
                 <button class="btn btn-primary btn-block" onclick="nextStep(2)">
-                    <i class="fas fa-arrow-right"></i> Lanjut ke Guru IT
+                    <i class="fas fa-arrow-right"></i> Lanjut ke Guru
                 </button>
             </div>
 
@@ -417,7 +417,7 @@
                     <select id="jabatan-guru" class="form-select" required>
                         <option value="">Pilih Jabatan</option>
                         <option value="Kepala Sekolah" disabled>Kepala Sekolah</option>
-                        <option value="Guru IT">Guru </option>
+                        <option value="Guru">Guru</option>
                         <option value="Kepala Urusan Kurikulum" disabled>Kepala Urusan Kurikulum</option>
                     </select>
                 </div>
@@ -454,7 +454,7 @@
                     <select id="jabatan-karus" class="form-select" required>
                         <option value="">Pilih Jabatan</option>
                         <option value="Kepala Sekolah" disabled>Kepala Sekolah</option>
-                        <option value="Guru IT" disabled>Guru </option>
+                        <option value="Guru" disabled>Guru</option>
                         <option value="Kepala Urusan Kurikulum">Kepala Urusan Kurikulum</option>
                     </select>
                 </div>
@@ -471,6 +471,7 @@
             <i class="fas fa-question-circle notification-icon warning"></i>
             <h3 class="notification-title">Konfirmasi Data</h3>
             <p class="notification-message">Apakah Anda sudah yakin dengan data ini?</p>
+            <div id="confirmationContent" style="text-align: left; margin: 20px 0;"></div>
             <div class="notification-buttons">
                 <button class="notification-btn confirm" onclick="submitData()">
                     <i class="fas fa-check"></i> Ya, Kirim
@@ -487,8 +488,8 @@
             <i class="fas fa-check-circle notification-icon success"></i>
             <h3 class="notification-title">Data Terkirim!</h3>
             <p class="notification-message">Data Anda berhasil dikirim</p>
-            <button class="btn btn-primary" onclick="closeModal('successModal')" style="margin-top: 15px;">
-                <i class="fas fa-thumbs-up"></i> Mengerti
+            <button class="btn btn-primary" onclick="redirectToRekap()" style="margin-top: 15px;">
+                <i class="fas fa-thumbs-up"></i> Lihat Rekap Data
             </button>
         </div>
     </div>
@@ -731,33 +732,25 @@
             saveStepData(4); // Save data from step 4
             
             // Tampilkan ringkasan data sebelum dikirim
-            const confirmationModal = document.getElementById('confirmationModal');
-            const confirmationContent = `
-                <h3>Konfirmasi Data</h3>
-                <div style="text-align: left; margin: 20px 0;">
-                    <h4>Kepala Sekolah</h4>
-                    <p>Kecamatan: ${formData.kepalaSekolah.kecamatan}</p>
-                    <p>Sekolah: ${formData.kepalaSekolah.sekolah}</p>
-                    <p>Nama: ${formData.kepalaSekolah.nama}</p>
-                    <p>NIP: ${formData.kepalaSekolah.nip}</p>
-                    
-                    <h4 style="margin-top: 15px;">Guru IT</h4>
-                    <p>Nama: ${formData.guruIT.nama}</p>
-                    <p>NIP: ${formData.guruIT.nip}</p>
-                    <p>Pengalaman IT: ${formData.guruIT.pengalamanIT} tahun</p>
-                    
-                    <h4 style="margin-top: 15px;">Kepala Urusan Kurikulum</h4>
-                    <p>Nama: ${formData.karusKurikulum.nama}</p>
-                    <p>NIP: ${formData.karusKurikulum.nip}</p>
-                </div>
+            const confirmationContent = document.getElementById('confirmationContent');
+            confirmationContent.innerHTML = `
+                <h4>Kepala Sekolah</h4>
+                <p>Kecamatan: ${formData.kepalaSekolah.kecamatan}</p>
+                <p>Sekolah: ${formData.kepalaSekolah.sekolah}</p>
+                <p>Nama: ${formData.kepalaSekolah.nama}</p>
+                <p>NIP: ${formData.kepalaSekolah.nip || '-'}</p>
+                
+                <h4 style="margin-top: 15px;">Guru IT</h4>
+                <p>Nama: ${formData.guruIT.nama}</p>
+                <p>NIP: ${formData.guruIT.nip || '-'}</p>
+                <p>Pengalaman IT: ${formData.guruIT.pengalamanIT} tahun</p>
+                
+                <h4 style="margin-top: 15px;">Kepala Urusan Kurikulum</h4>
+                <p>Nama: ${formData.karusKurikulum.nama}</p>
+                <p>NIP: ${formData.karusKurikulum.nip || '-'}</p>
             `;
             
-            confirmationModal.querySelector('.notification-box').insertBefore(
-                document.createElement('div'), 
-                confirmationModal.querySelector('.notification-buttons')
-            ).innerHTML = confirmationContent;
-            
-            confirmationModal.classList.add('active');
+            document.getElementById('confirmationModal').classList.add('active');
         }
         
         // Validate Step 4 (Karus Kurikulum)
@@ -796,20 +789,68 @@
         function submitData() {
             closeModal('confirmationModal');
             
-            // Here you would normally send data to server
-            // For demo, we'll just show success message
+            // Simpan data ke localStorage
+            saveToLocalStorage();
             
-            // Simulate API call with delay
-            setTimeout(() => {
-                document.getElementById('successModal').classList.add('active');
-                
-                // Reset form after submission
-                setTimeout(() => {
-                    resetForm();
-                }, 3000);
-            }, 1000);
+            // Tampilkan pesan sukses
+            document.getElementById('successModal').classList.add('active');
         }
         
+        // Simpan data ke localStorage
+        function saveToLocalStorage() {
+            // Ambil data yang sudah ada dari localStorage
+            let pesertaList = JSON.parse(localStorage.getItem('pesertaList')) || [];
+            
+            // Format tanggal
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }).replace(/\//g, '/');
+            
+            // Tambahkan data kepala sekolah
+            pesertaList.push({
+                no: pesertaList.length + 1,
+                npsn: formData.kepalaSekolah.npsn,
+                unitKerja: formData.kepalaSekolah.sekolah,
+                namaLengkap: formData.kepalaSekolah.nama,
+                nip: formData.kepalaSekolah.nip || '',
+                jabatan: formData.kepalaSekolah.jabatan,
+                tanggal: formattedDate
+            });
+            
+            // Tambahkan data guru IT
+            pesertaList.push({
+                no: pesertaList.length + 1,
+                npsn: formData.kepalaSekolah.npsn,
+                unitKerja: formData.kepalaSekolah.sekolah,
+                namaLengkap: formData.guruIT.nama,
+                nip: formData.guruIT.nip || '',
+                jabatan: formData.guruIT.jabatan,
+                tanggal: formattedDate
+            });
+            
+            // Tambahkan data karus kurikulum
+            pesertaList.push({
+                no: pesertaList.length + 1,
+                npsn: formData.kepalaSekolah.npsn,
+                unitKerja: formData.kepalaSekolah.sekolah,
+                namaLengkap: formData.karusKurikulum.nama,
+                nip: formData.karusKurikulum.nip || '',
+                jabatan: formData.karusKurikulum.jabatan,
+                tanggal: formattedDate
+            });
+            
+            // Simpan kembali ke localStorage
+            localStorage.setItem('pesertaList', JSON.stringify(pesertaList));
+        }
+        
+        // Redirect ke halaman rekap
+        function redirectToRekap() {
+            window.location.href = 'rekap.html';
+        }
+
         // Reset form
         function resetForm() {
             // Close success modal
