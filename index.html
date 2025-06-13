@@ -316,24 +316,24 @@
                     <div class="stats-container">
                         <div class="stat-card">
                             <h3>Jumlah Peserta Hadir</h3>
-                            <div class="number">142</div>
+                            <div class="number" id="totalParticipants">0</div>
                             <p>Orang</p>
                         </div>
                         <div class="stat-card">
                             <h3>Jumlah Sekolah Hadir</h3>
-                            <div class="number">38</div>
+                            <div class="number" id="totalSchools">0</div>
                             <p>Sekolah</p>
                         </div>
                         <div class="stat-card">
                             <h3>Kehadiran Hari Ini</h3>
-                            <div class="number">27</div>
+                            <div class="number" id="todayParticipants">0</div>
                             <p>Peserta</p>
                         </div>
                     </div>
 
                     <h3 style="margin-bottom: 15px; color: var(--primary-color);">Daftar Sekolah yang Telah Registrasi</h3>
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="schoolsTable">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -343,42 +343,8 @@
                                     <th>Jumlah Peserta</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>20234567</td>
-                                    <td>SD Negeri 1 Contoh</td>
-                                    <td>Kec. Contoh</td>
-                                    <td>5</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>20234568</td>
-                                    <td>SMP Negeri 2 Sample</td>
-                                    <td>Kec. Sample</td>
-                                    <td>3</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>20234569</td>
-                                    <td>SMA Negeri 3 Test</td>
-                                    <td>Kec. Test</td>
-                                    <td>4</td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>20234570</td>
-                                    <td>SD Negeri 4 Demo</td>
-                                    <td>Kec. Demo</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>20234571</td>
-                                    <td>SMK Negeri 5 Trial</td>
-                                    <td>Kec. Trial</td>
-                                    <td>6</td>
-                                </tr>
+                            <tbody id="schoolsTableBody">
+                                <!-- Data will be loaded by JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -407,6 +373,68 @@
                 document.getElementById('main-content').classList.remove('active');
             }
         });
+
+        // Function to load and display school data
+        function loadSchoolData() {
+            const pesertaList = JSON.parse(localStorage.getItem('pesertaList')) || [];
+            const schoolsTableBody = document.getElementById('schoolsTableBody');
+            
+            // Clear existing rows
+            schoolsTableBody.innerHTML = '';
+            
+            // Group participants by school
+            const schoolsMap = {};
+            
+            pesertaList.forEach(peserta => {
+                if (!schoolsMap[peserta.unitKerja]) {
+                    schoolsMap[peserta.unitKerja] = {
+                        npsn: peserta.npsn || '-',
+                        unitKerja: peserta.unitKerja || '-',
+                        kecamatan: peserta.kecamatan || '-',
+                        count: 0
+                    };
+                }
+                schoolsMap[peserta.unitKerja].count++;
+            });
+            
+            // Convert to array and sort by school name
+            const schoolsArray = Object.values(schoolsMap);
+            schoolsArray.sort((a, b) => a.unitKerja.localeCompare(b.unitKerja));
+            
+            // Add schools to table
+            schoolsArray.forEach((school, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${school.npsn}</td>
+                    <td>${school.unitKerja}</td>
+                    <td>${school.kecamatan}</td>
+                    <td>${school.count}</td>
+                `;
+                schoolsTableBody.appendChild(row);
+            });
+            
+            // Update statistics
+            document.getElementById('totalParticipants').textContent = pesertaList.length;
+            document.getElementById('totalSchools').textContent = schoolsArray.length;
+            
+            // Count today's participants (assuming tanggal is in format DD/MM/YYYY)
+            const today = new Date();
+            const todayStr = today.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }).replace(/\//g, '/');
+            
+            const todayParticipants = pesertaList.filter(peserta => 
+                peserta.tanggal && peserta.tanggal.includes(todayStr)
+            ).length;
+            
+            document.getElementById('todayParticipants').textContent = todayParticipants;
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadSchoolData);
     </script>
 </body>
 </html>
